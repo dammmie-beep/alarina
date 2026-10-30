@@ -1,0 +1,53 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "alarina"
+version = "0.1.0"
+description = "Match contributors to GitHub issues they can realistically finish"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+dependencies = [
+    "httpx[http2]>=0.27",
+    "pydantic>=2.0",
+    "instructor>=1.6",
+    "litellm>=1.40",
+    "scikit-learn>=1.5",
+    "typer>=0.12",
+    "keyring>=25",
+    "aiosqlite>=0.20",
+]
+
+[project.scripts]
+alarina = "alarina.cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pytest-asyncio>=0.23",
+    "pytest-recording>=0.13",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/alarina"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+mypy_path = "src"

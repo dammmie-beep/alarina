@@ -1,0 +1,35 @@
+# Credentials — never commit
+.env
+*.env
+
+# SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+benchmark/data/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# uv / venv
+.venv/
+
+# Tool caches
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
