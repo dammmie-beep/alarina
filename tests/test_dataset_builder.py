@@ -104,9 +104,10 @@ class TestTruncate:
         assert result[-2000:] == "E" * 2000
 
     def test_middle_content_dropped(self) -> None:
-        text = "START" + "x" * 5000 + "END"
+        # half = 10 // 2 = 5; end token must be exactly 5 chars
+        text = "SSSSS" + "x" * 5000 + "EEEEE"
         result = _truncate(text, max_chars=10)
-        assert result == "START" + "END"
+        assert result == "SSSSS" + "EEEEE"
 
 
 # ---------------------------------------------------------------------------
@@ -164,7 +165,8 @@ class TestFirstFixerComment:
         assert _first_fixer_comment(issue, "alice") == "2024-01-03T00:00:00Z"
 
     def test_returns_none_when_fixer_never_commented(self) -> None:
-        issue = _issue(comments=[])
+        # Comments exist, but none are from the fixer (alice)
+        issue = _issue(comments=[{"createdAt": "2024-01-02T00:00:00Z", "author": {"login": "bob"}}])
         assert _first_fixer_comment(issue, "alice") is None
 
     def test_returns_none_for_deleted_author(self) -> None:
@@ -289,7 +291,7 @@ class TestBuildIntegration:
             from benchmark.repos import Repo
 
             with patch.object(repos_module, "BENCHMARK_REPOS", [Repo("psf/black", "Python")]):
-                with patch("alarina.config.get_github_token", return_value=_TOKEN):
+                with patch("benchmark.build_dataset.get_github_token", return_value=_TOKEN):
                     await build(db_path=db_path)
 
         async with open_db(db_path) as conn:
@@ -335,7 +337,7 @@ class TestBuildIntegration:
                 "BENCHMARK_REPOS",
                 [Repo("psf/black", "Python"), Repo("pallets/flask", "Python")],
             ):
-                with patch("alarina.config.get_github_token", return_value=_TOKEN):
+                with patch("benchmark.build_dataset.get_github_token", return_value=_TOKEN):
                     await build(db_path=db_path)  # must not raise
 
         async with open_db(db_path) as conn:

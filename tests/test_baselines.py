@@ -135,12 +135,11 @@ class TestSpearmanR:
         y = [5.0, 4.0, 3.0, 2.0, 1.0]
         assert _spearman_r(x, y) == pytest.approx(-1.0)
 
-    def test_no_correlation(self) -> None:
-        # Alternating pattern → r close to 0
+    def test_zero_correlation(self) -> None:
+        # x=[1,2,3,4], y=[3,1,4,2] → rank correlation is exactly 0
         x = [1.0, 2.0, 3.0, 4.0]
-        y = [2.0, 1.0, 4.0, 3.0]
-        r = _spearman_r(x, y)
-        assert -0.5 < r < 0.5
+        y = [3.0, 1.0, 4.0, 2.0]
+        assert _spearman_r(x, y) == pytest.approx(0.0)
 
     def test_returns_zero_for_single_element(self) -> None:
         assert _spearman_r([1.0], [1.0]) == 0.0
